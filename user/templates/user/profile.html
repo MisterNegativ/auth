@@ -19,16 +19,27 @@
         <form name="create_blog" method="POST" novalidate>
           <h2>Create new blog</h2>
           {% csrf_token %}
-          {% for field in form %}
-            <div class="field-wrapper">
-              {{ field.label_tag }} {{ field }}
-              {% if field.errors %}
-                <div class="text-danger">
-                  {{ field.errors }}
-                </div>
-              {% endif %}
-            </div>
-          {% endfor %}
+
+          <div class="field-wrapper">
+            <label for="id_image">
+                <input type="file" id="id_image" name="image" />
+            </label>
+            {{ form.bio.label_tag }} {{ form.bio }}
+            {% if form.image.errors %}
+              <div class="text-danger">
+                {{ field.errors }}
+              </div>
+          </div>
+
+
+          <div class="field-wrapper">
+            {{ form.bio.label_tag }} {{ form.bio }}
+            {% if form.bio.errors %}
+              <div class="text-danger">
+                {{ field.errors }}
+              </div>
+          </div>
+
           <button class="btn btn-primary d-block col-12" type="submit">Create</button>
         </form>
       </div>
