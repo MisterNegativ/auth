@@ -58,7 +58,7 @@ def settings_page(request):
     if request.user.is_authenticated:
         if request.method == 'GET':
             profile = Profile.objects.get(owner_id=request.user.id)
-            form = ProfileForm
+            form = ProfileForm(data={'bio': profile.bio}, files={'image': profile.image})
             return render(request, 'user/profile.html', {'profile': profile, 'form': form})
         if request.method == 'POST':
             form = ProfileForm(request.POST, request.FILES)
