@@ -45,4 +45,7 @@ class ProfileForm(ModelForm):
     class Meta:
         model = Profile
         fields = ['bio', 'image']
+        widgets = {
+            'bio': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your last name'}),
+        }
 
