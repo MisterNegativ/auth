@@ -75,19 +75,24 @@
 
 <script>
     const imageInput = document.getElementByld('id_image');
-    const img = document.getElementByld('profile-image');
-    const wrapper = document.getElementByld('image-wrapper');
-    if (imageInput) {
-        if (img) {
-            
 
-            img.src = 'url';
+
+    imageInput.onchange = (event) => {
+        const files = imageInput.files;
+        const file = files[0];
+        const img = document.getElementByld('profile-image');
+        const wrapper = document.getElementByld('image-wrapper');
+        const newURL = URL.createObjectURL('file');
+        if (img) {
+            const newURL = URL.createObjectURL('file');
+            img.src = newURL;
         } else {
             const newImg = document.createElement('IMG');
-            newImg.src = 'url';
+            newImg.src = newURL;
             wrapper.appendChild(newImg);
         }
     }
+    
 </script>
 
 {% endblock %}
