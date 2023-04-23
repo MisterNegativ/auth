@@ -47,7 +47,7 @@
                     {% if profile.image %}
                         <img src="{{ profile.image.url }}" class="profile-image" />
                     {% endif %}
-                    <input type="file" id="id_image" name="image" />
+                    <input type="file" id="id_image" name="image" accept="image/*" />
                 </div>
             </label>
             {{ form.bio.label_tag }} {{ form.bio }}
