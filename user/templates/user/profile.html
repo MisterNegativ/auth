@@ -43,9 +43,9 @@
 
           <div class="field-wrapper">
             <label for="id_image">
-                <div class="image-wrapper">
+                <div class="image-wrapper" id="image-wrapper">
                     {% if profile.image %}
-                        <img src="{{ profile.image.url }}" class="profile-image" />
+                        <img src="{{ profile.image.url }}" class="profile-image" id="image-profile" />
                     {% endif %}
                     <input type="file" id="id_image" name="image" accept="image/*" />
                 </div>
@@ -72,6 +72,24 @@
     </div>
   </div>
 </div>
+
+<script>
+    const imageInput = document.getElementByld('id_image');
+    const img = document.getElementByld('profile-image');
+    const wrapper = document.getElementByld('image-wrapper');
+    if (imageInput) {
+        if (img) {
+            
+
+            img.src = 'url';
+        } else {
+            const newImg = document.createElement('IMG');
+            newImg.src = 'url';
+            wrapper.appendChild(newImg);
+        }
+    }
+</script>
+
 {% endblock %}
 
 
