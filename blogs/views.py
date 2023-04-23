@@ -3,6 +3,7 @@ from .models import Blog, Post, House, City, Oblast
 from .forms import CreateBlogForm, CreatePostForm
 
 
+
 def home_page(request):
     if request.user.is_authenticated:
         blogs = Blog.objects.filter(owner_id=request.user.id).order_by('-created_at')
