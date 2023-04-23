@@ -61,7 +61,15 @@ def settings_page(request):
             form = ProfileForm
             return render(request, 'user/profile.html', {'profile': profile, 'form': form})
         if request.method == 'POST':
-            pass
+            form = ProfileForm(request.POST, request.FILES)
+            profile = Profile.objects.get(owner_id=request.user.id)            
+            if form.is_valid():
+                profile.bio = form.data.get('bio')
+                profile.image = form.files.get('image')
+                profile.save()
+                return render(request, 'user/profile.html', {'profile': profile, 'form': form})
+            else:
+                return render(request, 'user/profile.html', {'profile': profile, 'form': form})
     else:
         return redirect('/')
 
