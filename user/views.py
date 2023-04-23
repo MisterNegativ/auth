@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import auth
 from django.contrib.auth import login, authenticate
-from user.forms import UserRegistrationForm, LoginForm
+from user.forms import UserRegistrationForm, LoginForm, ProfileForm
 from user.models import Profile
 
 
@@ -52,3 +52,16 @@ def register_page(request):
 def logout_page(request):
     auth.logout(request)
     return redirect('/auth/login')
+
+
+def settings_page(request):
+    if request.user.is_authenticated:
+        if request.method == 'GET':
+            profile = Profile.objects.get(owner_id=request.user.id)
+            form = ProfileForm
+            return render(request, 'user/profile.html', {'profile': profile, 'form': form})
+        if request.method == 'POST':
+            pass
+    else:
+        return redirect('/')
+
