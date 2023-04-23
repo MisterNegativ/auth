@@ -22,7 +22,12 @@
 
           <div class="field-wrapper">
             <label for="id_image">
-                <input type="file" id="id_image" name="image" />
+                <div class="image-wrapper">
+                    {% if profile.image %}
+                        <img src="{{ profile.image.url }}" class="profile-image" />
+                    {% endif %}
+                    <input type="file" id="id_image" name="image" />
+                </div>
             </label>
             {{ form.bio.label_tag }} {{ form.bio }}
             {% if form.image.errors %}
