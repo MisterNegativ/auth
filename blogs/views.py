@@ -3,6 +3,7 @@ from .models import Oblast, City, House
 from .forms import CreateCityForm, CreateHouseForm, CreateOblastForm
 
 
+
 def home_page(request):
     if request.user.is_authenticated:
         oblasts = Oblast.objects.filter(owner_id=request.user.id)

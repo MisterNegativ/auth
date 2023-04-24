@@ -1,6 +1,7 @@
 from django.forms import Form, ModelForm
 from django import forms
 from django.contrib.auth.models import User
+from user.models import Profile
 
 
 class LoginForm(Form):
@@ -38,3 +39,13 @@ class UserRegistrationForm(ModelForm):
         if commit:
             user.save()
         return user
+
+
+class ProfileForm(ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['bio', 'image']
+        widgets = {
+            'bio': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Type something about yourself...'}),
+        }
+
