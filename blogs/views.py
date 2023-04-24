@@ -1,83 +1,112 @@
 from django.shortcuts import render, redirect
-from .models import Blog, Post, House, City, Oblast
-from .forms import CreateBlogForm, CreatePostForm
+from .models import Oblast, City, House
+from .forms import CreateCityForm, CreateHouseForm, CreateOblastForm
 
 
 def home_page(request):
     if request.user.is_authenticated:
-        blogs = Blog.objects.filter(owner_id=request.user.id).order_by('-created_at')
-        return render(request, 'blogs/index.html', {'blogs': blogs})
+        oblasts = Oblast.objects.filter(owner_id=request.user.id)
+        return render(request, 'blogs/index.html', {'oblasts': oblasts, 'user': request.user})
     else:
         return redirect('/auth/login/')
 
 
-def create_blog_page(request):
-    if not request.user.is_authenticated:
+def create_oblast(request):
+    if request.user.is_authenticated:
+        if request.method == 'GET':
+            form = CreateOblastForm()
+            return render(request, 'blogs/create-oblast.html', {'form': form})
+        if request.method == 'POST':
+            form = CreateOblastForm(request.POST)
+            if form.is_valid():
+                image = form.files.get('image')
+                oblast = form.cleaned_data.get('oblast')
+                Oblasts = Oblast(oblast=oblast, owner_id=request.user.id)
+                Oblasts.save()
+                return redirect('/')
+            else:
+                return render(request, 'blogs/create-oblast.html', {'form': form})
+    else:
         return redirect('/auth/login/')
 
-    if request.method == 'GET':
-        form = CreateBlogForm()
-        return render(request, 'blogs/create-blog.html', {'form': form})
 
-    if request.method == 'POST':
-        form = CreateBlogForm(request.POST)
-        if not form.is_valid():
-            return render(request, 'blogs/create-blog.html', {'form': form})
-
-        title = form.cleaned_data['title']
-        description = form.cleaned_data['description']
-        city = form.cleaned_data['city']
-        oblast = form.cleaned_data['oblast']
-        house_address = request.POST.get('house_address')
-        house = House.objects.get(name=house_address)
-
-        blog = Blog(title=title, description=description, owner=request.user, house=house, city=city, oblast=oblast)
-        blog.save()
-        return redirect('/')
+def oblast_details(request, pk):
+    if request.user.is_authenticated:
+        oblast = Oblast.objects.get(id=pk)
+        cities = City.objects.filter(oblast_id=pk).order_by('-created_at')
+        houses = House.objects.filter(oblast_id=pk).order_by
+        form1 = CreateCityForm()
+        form2 = CreateHouseForm()
+        return render(request, 'blogs/oblast-details.html', {'oblast': oblast, 'cities': cities, 'houses': houses, 
+                                                    'form1': form1, 'form2': form2})
+    else:
+        return redirect('/auth/login/')
 
 
-def blog_details_page(request, pk):
-    if request.method == 'GET':
-        form = CreatePostForm()
-        blog = Blog.objects.get(id=pk)
-        posts = Post.objects.filter(blog_id=pk)
-        return render(request, 'blogs/blog-details.html', {'blog': blog, 'user': request.user, 'form': form,
-                                                           'posts': posts})
-
-
-def delete_blog_page(request, pk):
-    if request.method == 'GET':
-        blog_obj = Blog.objects.get(id=pk)
-        if request.user.id == blog_obj.owner.id:
-            blog_obj.delete()
-            return redirect('/')
-        return redirect('/')
-
-
-def create_post(request, pk):
-    if request.method == 'POST':
-        blog_obj = Blog.objects.get(id=pk)
-        if request.user.id == blog_obj.owner_id:
-            form = CreatePostForm(request.POST)
+def city_create(request, pk):
+    if request.user.is_authenticated:
+        if request.method == 'GET':
+            form = CreateCityForm()
+            return render(request, 'blogs/create-oblast.html', {'form': form})
+        oblast = Oblast.objects.get(id=pk)
+        if request.method == 'POST':
+            form = CreateCityForm(request.POST)
             if form.is_valid():
-                title = form.data.get('title')
-                content = form.data.get('content')
-                post = Post(title=title, content=content, blog_id=blog_obj.id)
-                post.save()
-                return redirect('/blogs/' + str(blog_obj.id) + '/')
+                city_name = form.data.get('city')
+                city = City(city=city_name, oblast_id=pk)
+                city.save()
+                return redirect('/blogs/' + str(oblast.id) + '/')
             else:
-                return render(request, 'blogs/blog-details.html', {'blog': blog_obj, 'user': request.user, 'form': form})
+                return redirect('/')
         else:
             return redirect('/')
+    else:
+        return redirect('/auth/login/')
 
 
-def delete_post(request, pk):
-    post_obj = Post.objects.get(id=pk)
-    if post_obj.blog.owner.id == request.user.id:
-        post_obj.delete()
-        return redirect('/blogs/' + str(post_obj.blog.id) + '/')
+def house_create(request, pk):
+    if request.user.is_authenticated:
+        oblast = Oblast.objects.get(id=pk)
+        if request.method == 'POST':
+            form = CreateHouseForm(request.POST)
+            if form.is_valid():
+                address = form.data.get('address')
+                region = form.data.get('region')
+                street = form.data.get('street')
+                flat = form.data.get('flat')
+
+                house = House(address=address, region=region, street=street, flat=flat, oblast=oblast)
+                house.save()
+                return redirect('/blogs/' + str(oblast.id) + '/')
+            else:
+                return redirect('/')
+        else:
+            form = CreateHouseForm()
+            return render(request, 'blogs/create-oblast.html', {'form': form})
+    else:
+        return redirect('/auth/login/')
 
 
-def post_details(request, pk):
-    post_obj = Post.objects.get(id=pk)
-    return render(request, 'blogs/post-details.html', {'post': post_obj})
+def delete_oblast(request, pk):
+    if request.user.is_authenticated:
+        oblast = Oblast.objects.get(id=pk)
+        if oblast.owner.id == request.user.id:
+            oblast.delete()
+            return redirect('/')
+        else:
+            return redirect('/')
+    else:
+        return redirect('/auth/login/')
+
+
+def delete_house(request, pk):
+    if request.user.is_authenticated:
+        house = House.objects.get(id=pk)
+        oblast = Oblast.objects.get(id=house.oblast.id)
+        if oblast.owner.id == request.user.id:
+            house.delete()
+            return redirect('/blogs/' + str(oblast.id) + '/')
+        else:
+            return redirect('/')
+    else:
+        return redirect('/auth/login/')

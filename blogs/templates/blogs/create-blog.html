@@ -10,7 +10,56 @@
   </style>
 {% endblock %}
 {% block content %}
+<header class="header">
 
+  <nav class="navbar nav-1">
+     <section class="flex">
+        <a href="/" class="logo"><i class="fas fa-house"></i>MyHome</a>
+
+        <ul>
+           <li><a href="/blogs/create/">post property<i class="fas fa-paper-plane"></i></a></li>
+        </ul>
+     </section>
+  </nav>
+
+  <nav class="navbar nav-2">
+     <section class="flex">
+        <div id="menu-btn" class="fas fa-bars"></div>
+
+        <div class="menu">
+           <ul>
+              <li><a href="#">buy<i class="fas fa-angle-down"></i></a>
+                 <ul>
+                    <li><a href="#">house</a></li>
+                    <li><a href="#">flat</a></li>
+                    <li><a href="#">shop</a></li>
+                    <li><a href="#">ready to move</a></li>
+                    <li><a href="#">furnished</a></li>
+                 </ul>
+              </li>
+              <li><a href="#">sell<i class="fas fa-angle-down"></i></a>
+                 <ul>
+                    <li><a href="#">post property</a></li>
+                    <li><a href="#">dashboard</a></li>
+                 </ul>
+              </li>
+              <li><a href="#">rent</a>
+                 <ul>
+                    <li><a href="#">house</a></li>
+                    <li><a href="#">flat</a></li>
+                    <li><a href="#">shop</a></li>
+                 </ul>
+              </li>
+           </ul>
+        </div>
+
+        <ul>
+          <li><a class="nav-link active" aria-current="page" href="/auth/logout">Logout</a></li>
+        </ul>
+     </section>
+  </nav>
+
+</header>
 <div class="container">
   <div class="row">
     <div class="col-12">
@@ -20,6 +69,7 @@
           {% csrf_token %}
           {% for field in form %}
             <div class="field-wrapper">
+              <img src="{{ post.image.url }}" alt="{{ post.text }}" class="post-image">
               {{ field.label_tag }} {{ field }}
               {% if field.errors %}
                 <div class="text-danger">

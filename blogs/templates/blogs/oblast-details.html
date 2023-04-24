@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+<title>{{user_name.firstname}}</title>
+<style>
+    .field-wrapper {
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<header class="header">
+
+  <nav class="navbar nav-1">
+     <section class="flex">
+        <a href="/" class="logo"><i class="fas fa-house"></i>MyHome</a>
+
+        <ul>
+           <li><a href="/blogs/create/">post property<i class="fas fa-paper-plane"></i></a></li>
+        </ul>
+     </section>
+  </nav>
+
+  <nav class="navbar nav-2">
+     <section class="flex">
+        <div id="menu-btn" class="fas fa-bars"></div>
+
+        <div class="menu">
+           <ul>
+              <li><a href="#">buy<i class="fas fa-angle-down"></i></a>
+                 <ul>
+                    <li><a href="#">house</a></li>
+                    <li><a href="#">flat</a></li>
+                    <li><a href="#">shop</a></li>
+                    <li><a href="#">ready to move</a></li>
+                    <li><a href="#">furnished</a></li>
+                 </ul>
+              </li>
+              <li><a href="#">sell<i class="fas fa-angle-down"></i></a>
+                 <ul>
+                    <li><a href="#">post property</a></li>
+                    <li><a href="#">dashboard</a></li>
+                 </ul>
+              </li>
+              <li><a href="#">rent</a>
+                 <ul>
+                    <li><a href="#">house</a></li>
+                    <li><a href="#">flat</a></li>
+                    <li><a href="#">shop</a></li>
+                 </ul>
+              </li>
+           </ul>
+        </div>
+
+        <ul>
+          <li><a class="nav-link active" aria-current="page" href="/auth/logout">Logout</a></li>
+        </ul>
+     </section>
+  </nav>
+
+</header>
+<div class="container">
+            
+        </nav>
+    </div>
+    <div class="row mt-5">
+          <div class="col-12 card p-3">
+              <div class="col-12 d-flex justify-content-between items-center">
+                <h3>{{oblast.name}}</h3>
+              <a class="btn btn-danger" href="/blogs/{{oblast.id}}/delete/" role="button">Delete blog</a>
+              </div>
+              <div class="col-12 ">
+                <p>{{oblast.created_at}}</p>
+
+              </div>
+          </div>
+    </div>
+
+    {% if user.id == oblast.owner.id and cities|length == 0 %}
+    {% if city|length == 0 %}
+        <div class="row">
+        <div class="col-12 card p-3 my-3">
+        <form action="/blogs/{{oblast.id}}/city-create" method="POST" novalidate>
+        <h4>Write something new here:</h4>
+        {% csrf_token %}
+            {% for field in form1 %}
+                      <div class="field-wrapper">
+                          {{ field.label_tag }} {{ field }}
+                          <div class="text-danger">
+                          {{ field.errors }}
+                          </div>
+                      </div>
+                  {% endfor %}
+    {% endif %}
+            {% endif %}
+
+    {% if user.id == oblast.owner.id and houses|length == 0 %}
+      {% if house|length == 0 %}
+        <div class="row">
+          <div class="col-12 card p-3 my-3">
+              <form action="/blogs/{{oblast.id}}/house-create" method="POST" novalidate>
+                <h4>Write something new here:</h4>
+                {% csrf_token %}
+                  {% for field in form2 %}
+                      <div class="field-wrapper">
+                          {{ field.label_tag }} {{ field }}
+                          <div class="text-danger">
+                          {{ field.errors }}
+                          </div>
+                      </div>
+                  {% endfor %}
+                <button class="btn btn-primary d-block col-12" type="submit">Create</button>
+              </form>
+          </div>
+        </div>
+      {% endif %}
+
+    {% endif %}
+    <div class="row">
+      {% if houses|length %}
+          {% for house in houses %}
+              <div class="col-12">
+                  <div class="card p-2">
+                    <div style="display: flex; justify-content: center; align-items: center;">
+                              <div class="card-body">
+                                  <p class="card-title">Title : {{ house.address }}</p>
+                                  <p class="card-text">Region : {{ house.region }}</p>
+                                  <p class="card-text">Street : {{ house.street}}</p>
+                                  <p class="card-text">Flat : {{ house.flat}}</p>
+
+                              </div>
+                              <div><a href="/house/{{oblast.id}}/" class="btn btn-primary">Go</a></div>
+                          </div>
+                    </div>
+              </div>
+          {% endfor %}
+      {% else %}
+          <div class="col-12 card mt-3">
+                        <h4>No posts are created yet!</h4>
+          </div>
+        {% endif %}
+    </div>
+
+    <div class="row">
+      {% if cities|length %}
+          {% for city in cities %}
+              <div class="col-12">
+                  <div class="card p-2">
+                    <div style="display: flex; justify-content: center; align-items: center;">
+                              <div class="card-body">
+                                  <p class="card-title">City : {{ city.city }}</p>
+                                  
+
+                              </div>
+                              <div><a href="/house/{{oblast.id}}/" class="btn btn-primary">Go</a></div>
+                          </div>
+                    </div>
+              </div>
+          {% endfor %}
+      {% else %}
+          <div class="col-12 card mt-3">
+                        <h4>No posts are created yet!</h4>
+          </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

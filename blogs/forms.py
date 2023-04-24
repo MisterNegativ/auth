@@ -1,56 +1,42 @@
 from django import forms
-from .models import Blog, Post, House, City
+from .models import Post, Oblast, House, City
 
 
-class CreateBlogForm(forms.ModelForm):
-    house_address = forms.CharField(required=True,
-                                    widget=forms.TextInput(
-                                        attrs={'class': 'form-control', 'placeholder': 'Enter house address'}))
-    oblast = forms.CharField(required=True,
-                             widget=forms.TextInput(attrs={'class': 'form-control',
-                                                           'placeholder': 'Enter region'}))
-
-    city = forms.CharField(required=True,
-                             widget=forms.TextInput(attrs={'class': 'form-control',
-                                                           'placeholder': 'Enter city'}))
-
+class CreateOblastForm(forms.ModelForm):
     class Meta:
-        model = Blog
-        fields = ['title', 'description']
+        model = Oblast
+        fields = ['oblast']
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter blog title'}),
-            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Enter blog description'}),
+            'oblast': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter region'}),
+        }
 
+
+class CreateHouseForm(forms.ModelForm):
+    class Meta:
+        model = House
+        fields = ['address', 'region', 'street', 'flat']
+        widgets = {
+            'address': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter house address'}),
+            'region': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter region'}),
+            'street': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter street'}),
+            'flat':  forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter flat'}),
+        }
+
+
+class CreateCityForm(forms.ModelForm):
+    class Meta:
+        model = City
+        fields = ['city']
+        widgets = {
+            'city': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your city'})
         }
 
 
 class CreatePostForm(forms.ModelForm):
-    house_address = forms.CharField(required=True,
-                                    widget=forms.TextInput(
-                                        attrs={'class': 'form-control', 'placeholder': 'Enter house address'}))
-
     class Meta:
         model = Post
-        fields = ['title', 'content', 'blog']
+        fields = ['title', 'content']
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter post title'}),
-            'content': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Type something...'}),
-            'blog': forms.Select(attrs={'class': 'form-control'}),
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter posts title'}),
+            'content': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Type something...'})
         }
-
-    def clean(self):
-        cleaned_data = super().clean()
-        house_address = cleaned_data.get("house_address")
-
-        if not house_address:
-            raise forms.ValidationError("Please enter a valid house address.")
-
-        try:
-            house = House.objects.get(address=house_address)
-        except House.DoesNotExist:
-            raise forms.ValidationError("The entered house address does not exist.")
-
-        cleaned_data['house'] = house
-        return cleaned_data
-
-
