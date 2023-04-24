@@ -1,16 +1,18 @@
-"""
-ASGI config for auth project.
 
-It exposes the ASGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/4.2/howto/deployment/asgi/
-"""
-
+# +++++++++++ DJANGO +++++++++++
+# To use your own django app use code like this:
 import os
+import sys
 
-from django.core.asgi import get_asgi_application
+# assuming your django settings file is at '/home/sany23/mysite/mysite/settings.py'
+# and your manage.py is is at '/home/sany23/mysite/manage.py'
+path = '/home/sany23/auth'
+if path not in sys.path:
+    sys.path.append(path)
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'auth.settings')
+os.environ['DJANGO_SETTINGS_MODULE'] = 'auth.settings'
 
-application = get_asgi_application()
+# then:
+from django.core.wsgi import get_wsgi_application
+application = get_wsgi_application()
+
